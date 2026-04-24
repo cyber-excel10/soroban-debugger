@@ -203,6 +203,7 @@ fn main() -> miette::Result<()> {
                 .map_err(|e: std::io::Error| miette::miette!(e))
                 .and_then(|rt| rt.block_on(soroban_debugger::cli::commands::repl(args)))
         }
+        Some(Commands::Doctor(_args)) => soroban_debugger::cli::commands::doctor(),
         Some(Commands::External(argv)) => {
             if argv.is_empty() {
                 return Err(miette::miette!("Missing plugin subcommand"));

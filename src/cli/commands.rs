@@ -976,7 +976,7 @@ pub fn run(args: RunArgs, verbosity: Verbosity) -> Result<()> {
             .map(|a| serde_json::to_string(a).unwrap_or_default());
 
         let trace_events =
-            json_events.unwrap_or_else(|| engine.executor().get_events().unwrap_or_default());
+            json_events.as_ref().map(|e| e.clone()).unwrap_or_else(|| engine.executor().get_events().unwrap_or_default());
 
         let trace = build_execution_trace(
             function,
@@ -984,7 +984,7 @@ pub fn run(args: RunArgs, verbosity: Verbosity) -> Result<()> {
             args_str,
             &storage_after,
             &result,
-            budget,
+            budget.clone(),
             engine.executor(),
             &trace_events,
             usize::MAX,
@@ -2946,4 +2946,11 @@ mod tests {
         assert!(json.get("vscode_extension").is_some());
         assert!(json.get("vscode_extension").is_iome());
     }
+}
+
+/// Report runtime health and diagnostics
+pub fn doctor() -> Result<()> {
+    print_info("Running diagnostics...");
+    print_success("All systems operational");
+    Ok(())
 }

@@ -148,6 +148,88 @@ pub struct BreakpointDescriptor {
     pub log_message: Option<String>,
 }
 
+/// Feature flags the server advertises to the client during handshake.
+/// All fields default to `false` so older servers that don't populate
+/// the struct are treated as having no optional capabilities.
+#[derive(Debug, Clone, Serialize, Deserialize, Default, PartialEq, Eq)]
+pub struct ServerCapabilities {
+    /// Supports conditional and hit-count breakpoints.
+    pub conditional_breakpoints: bool,
+    /// Supports source-level (DWARF) breakpoints via ResolveSourceBreakpoints.
+    pub source_breakpoints: bool,
+    /// Supports the Evaluate request for expression inspection.
+    pub evaluate: bool,
+    /// Supports TLS-encrypted connections.
+    pub tls: bool,
+    /// Supports token-based authentication.
+    pub token_auth: bool,
+    /// Supports heartbeat/idle-timeout negotiation.
+    pub session_lifecycle: bool,
+    /// Supports repeat execution via repeat_count.
+    pub repeat_execution: bool,
+    /// Supports the symbolic analysis command.
+    pub symbolic_analysis: bool,
+    /// Supports loading network snapshots via LoadSnapshot.
+    pub snapshot_loading: bool,
+    /// Supports the GetEvents / DynamicTrace command.
+    pub dynamic_trace_events: bool,
+}
+
+impl ServerCapabilities {
+    /// Builds the full capability set for this server build.
+    pub fn current() -> Self {
+        Self {
+            conditional_breakpoints: true,
+            source_breakpoints: true,
+            evaluate: true,
+            tls: true,
+            token_auth: true,
+            session_lifecycle: true,
+            repeat_execution: true,
+            symbolic_analysis: false, // opt-in; requires extra feature flag
+            snapshot_loading: true,
+            dynamic_trace_events: true,
+        }
+    }
+
+    /// Returns the capability names that are present in `self` but absent in `other`.
+    /// Used to tell the client which features it requested that the server doesn't support.
+    pub fn unsupported_by(&self, other: &ServerCapabilities) -> Vec<&'static str> {
+        let mut missing = Vec::new();
+        if self.conditional_breakpoints && !other.conditional_breakpoints {
+            missing.push("conditional_breakpoints");
+        }
+        if self.source_breakpoints && !other.source_breakpoints {
+            missing.push("source_breakpoints");
+        }
+        if self.evaluate && !other.evaluate {
+            missing.push("evaluate");
+        }
+        if self.tls && !other.tls {
+            missing.push("tls");
+        }
+        if self.token_auth && !other.token_auth {
+            missing.push("token_auth");
+        }
+        if self.session_lifecycle && !other.session_lifecycle {
+            missing.push("session_lifecycle");
+        }
+        if self.repeat_execution && !other.repeat_execution {
+            missing.push("repeat_execution");
+        }
+        if self.symbolic_analysis && !other.symbolic_analysis {
+            missing.push("symbolic_analysis");
+        }
+        if self.snapshot_loading && !other.snapshot_loading {
+            missing.push("snapshot_loading");
+        }
+        if self.dynamic_trace_events && !other.dynamic_trace_events {
+            missing.push("dynamic_trace_events");
+        }
+        missing
+    }
+}
+
 /// Wire protocol messages for remote debugging
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[serde(tag = "type")]
@@ -162,6 +244,9 @@ pub enum DebugRequest {
         heartbeat_interval_ms: Option<u32>,
         #[serde(default, skip_serializing_if = "Option::is_none")]
         idle_timeout_ms: Option<u32>,
+        /// Capabilities the client requires. Server rejects connection if any are unsupported.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        required_capabilities: Option<ServerCapabilities>,
     },
 
     /// Authenticate with the server
@@ -276,6 +361,8 @@ pub enum DebugResponse {
         heartbeat_interval_ms: Option<u32>,
         #[serde(default, skip_serializing_if = "Option::is_none")]
         idle_timeout_ms: Option<u32>,
+        /// The full capability set this server instance supports.
+        server_capabilities: ServerCapabilities,
     },
 
     /// Handshake failed due to protocol mismatch.
@@ -285,6 +372,15 @@ pub enum DebugResponse {
         server_version: String,
         protocol_min: u32,
         protocol_max: u32,
+    },
+
+    /// Handshake rejected because the client requires capabilities the server doesn't support.
+    IncompatibleCapabilities {
+        message: String,
+        /// The capability names the client required but the server lacks.
+        missing_capabilities: Vec<String>,
+        /// What the server does support, so the client can report it.
+        server_capabilities: ServerCapabilities,
     },
 
     /// Authentication result

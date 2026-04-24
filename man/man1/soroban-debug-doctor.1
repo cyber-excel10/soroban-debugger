@@ -1,0 +1,38 @@
+.ie \n(.g .ds Aq \(aq
+.el .ds Aq '
+.TH doctor 1  "doctor " 
+.SH NAME
+doctor \- Report runtime health and diagnostics for troubleshooting
+.SH SYNOPSIS
+\fBdoctor\fR [\fB\-\-format\fR] [\fB\-\-remote\fR] [\fB\-\-token\fR] [\fB\-\-timeout\-ms\fR] [\fB\-\-vscode\-manifest\fR] [\fB\-h\fR|\fB\-\-help\fR] 
+.SH DESCRIPTION
+Report runtime health and diagnostics for troubleshooting
+.SH OPTIONS
+.TP
+\fB\-\-format\fR \fI<FORMAT>\fR [default: pretty]
+Output format (pretty, json)
+.br
+
+.br
+\fIPossible values:\fR
+.RS 14
+.IP \(bu 2
+pretty
+.IP \(bu 2
+json
+.RE
+.TP
+\fB\-\-remote\fR \fI<REMOTE>\fR
+Optional remote debug server to probe (e.g., localhost:9229)
+.TP
+\fB\-\-token\fR \fI<TOKEN>\fR
+Authentication token for remote probe (if required by server)
+.TP
+\fB\-\-timeout\-ms\fR \fI<TIMEOUT_MS>\fR [default: 3000]
+Timeout for remote checks in milliseconds
+.TP
+\fB\-\-vscode\-manifest\fR \fI<FILE>\fR
+Optional path to a VS Code extension `package.json` to report version hints
+.TP
+\fB\-h\fR, \fB\-\-help\fR
+Print help

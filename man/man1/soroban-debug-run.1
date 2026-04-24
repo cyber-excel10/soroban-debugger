@@ -4,7 +4,7 @@
 .SH NAME
 run \- Execute a contract function with the debugger
 .SH SYNOPSIS
-\fBrun\fR [\fB\-c\fR|\fB\-\-contract\fR] [\fB\-f\fR|\fB\-\-function\fR] [\fB\-a\fR|\fB\-\-args\fR] [\fB\-s\fR|\fB\-\-storage\fR] [\fB\-b\fR|\fB\-\-breakpoint\fR] [\fB\-\-network\-snapshot\fR] [\fB\-v\fR|\fB\-\-verbose\fR] [\fB\-\-server\fR] [\fB\-p\fR|\fB\-\-port\fR] [\fB\-\-host\fR] [\fB\-\-remote\fR] [\fB\-t\fR|\fB\-\-token\fR] [\fB\-\-tls\-cert\fR] [\fB\-\-tls\-key\fR] [\fB\-\-format\fR] [\fB\-\-output\fR] [\fB\-\-show\-events\fR] [\fB\-\-show\-auth\fR] [\fB\-\-json\fR] [\fB\-\-filter\-topic\fR] [\fB\-\-event\-filter\fR] [\fB\-\-repeat\fR] [\fB\-\-mock\fR] [\fB\-\-storage\-filter\fR] [\fB\-\-instruction\-debug\fR] [\fB\-\-step\-instructions\fR] [\fB\-\-step\-mode\fR] [\fB\-\-dry\-run\fR] [\fB\-\-export\-storage\fR] [\fB\-\-import\-storage\fR] [\fB\-\-batch\-args\fR] [\fB\-\-generate\-test\fR] [\fB\-\-overwrite\fR] [\fB\-\-timeout\fR] [\fB\-\-alert\-on\-change\fR] [\fB\-\-expected\-hash\fR] [\fB\-\-show\-ledger\fR] [\fB\-\-ttl\-warning\-threshold\fR] [\fB\-\-trace\-output\fR] [\fB\-\-save\-output\fR] [\fB\-\-append\fR] [\fB\-h\fR|\fB\-\-help\fR] 
+\fBrun\fR [\fB\-c\fR|\fB\-\-contract\fR] [\fB\-f\fR|\fB\-\-function\fR] [\fB\-a\fR|\fB\-\-args\fR] [\fB\-s\fR|\fB\-\-storage\fR] [\fB\-b\fR|\fB\-\-breakpoint\fR] [\fB\-\-network\-snapshot\fR] [\fB\-v\fR|\fB\-\-verbose\fR] [\fB\-\-server\fR] [\fB\-p\fR|\fB\-\-port\fR] [\fB\-\-host\fR] [\fB\-\-remote\fR] [\fB\-t\fR|\fB\-\-token\fR] [\fB\-\-tls\-cert\fR] [\fB\-\-tls\-key\fR] [\fB\-\-format\fR] [\fB\-\-output\fR] [\fB\-\-show\-events\fR] [\fB\-\-show\-auth\fR] [\fB\-\-json\fR] [\fB\-\-filter\-topic\fR] [\fB\-\-event\-filter\fR] [\fB\-\-repeat\fR] [\fB\-\-mock\fR] [\fB\-\-storage\-filter\fR] [\fB\-\-instruction\-debug\fR] [\fB\-\-step\-instructions\fR] [\fB\-\-step\-mode\fR] [\fB\-\-dry\-run\fR] [\fB\-\-export\-storage\fR] [\fB\-\-import\-storage\fR] [\fB\-\-batch\-args\fR] [\fB\-\-generate\-test\fR] [\fB\-\-overwrite\fR] [\fB\-\-timeout\fR] [\fB\-\-alert\-on\-change\fR] [\fB\-\-expected\-hash\fR] [\fB\-\-show\-ledger\fR] [\fB\-\-ttl\-warning\-threshold\fR] [\fB\-\-trace\-output\fR] [\fB\-\-timeline\-output\fR] [\fB\-\-save\-output\fR] [\fB\-\-append\fR] [\fB\-h\fR|\fB\-\-help\fR] 
 .SH DESCRIPTION
 Execute a contract function with the debugger
 .SH OPTIONS
@@ -135,6 +135,9 @@ TTL warning threshold in ledger sequence numbers (default: 1000)
 .TP
 \fB\-\-trace\-output\fR \fI<TRACE_OUTPUT>\fR
 Export execution trace to JSON file and emit a replay manifest sidecar
+.TP
+\fB\-\-timeline\-output\fR \fI<FILE>\fR
+Export a compact timeline narrative (pause points + key deltas) to JSON file
 .TP
 \fB\-\-save\-output\fR \fI<FILE>\fR
 Path to file where execution results should be saved
